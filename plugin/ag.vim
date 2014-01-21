@@ -10,8 +10,12 @@
 
 " Location of the ag utility
 if !exists("g:agprg")
-	let g:agprg="ag --nogroup --column"
+    let g:agprg = "ag --nogroup --column --line-numbers"
 endif
+
+function! ag#prePath()
+    return exists('t:AgPath') ? t:AgPath : expand("%:p:h")
+endfunction
 
 function! s:Ag(cmd, args)
     redraw
@@ -36,6 +40,7 @@ function! s:Ag(cmd, args)
     try
         let &grepprg=g:agprg
         let &grepformat=g:agformat
+        let t:AgPath = split(l:grepargs, '\s\+')[-1]
         silent execute a:cmd . " " . l:grepargs
     finally
         let &grepprg=grepprg_bak
