@@ -40,17 +40,8 @@ function! s:Ag(cmd, args)
     try
         let &grepprg=g:agprg
         let &grepformat=g:agformat
-        let l:arglist = split(l:grepargs, '\s\+')
-        let t:AgPath = l:arglist[-1]
-        if len(l:arglist) > 2
-            let t:AgPath = join(l:arglist[1:], ' ')
-            let l:AgPath = substitute(t:AgPath, '\\\+ ', " ", 'g')
-            let t:AgPath = substitute(l:AgPath, ' ', '\\ ', 'g')
-        else
-            let l:AgPath = t:AgPath
-        endif
-        let l:AgPath = substitute(l:AgPath, '\\$', '', 'g')
-        silent execute a:cmd . " " . l:arglist[0] . ' "' . l:AgPath . '"'
+        let t:AgPath = split(l:grepargs, '\s\+')[-1]
+        silent execute a:cmd . " " . l:grepargs
     finally
         let &grepprg=grepprg_bak
         let &grepformat=grepformat_bak
