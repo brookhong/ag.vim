@@ -13,7 +13,7 @@ if !exists("g:agprg")
     let g:agprg = "ag --nogroup --column --line-numbers"
 endif
 
-function! ag#prePath()
+function! AgPrePath()
     return exists('t:AgPath') ? t:AgPath : expand("%:p:h")
 endfunction
 
