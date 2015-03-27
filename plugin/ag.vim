@@ -10,7 +10,7 @@
 
 " Location of the ag utility
 if !exists("g:agprg")
-    let g:agprg = "ag --nogroup --column --line-numbers"
+    let g:agprg = "ag -f --nogroup --column --line-numbers"
 endif
 
 function! AgPrePath()
