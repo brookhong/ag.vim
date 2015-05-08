@@ -17,6 +17,16 @@ function! AgPrePath()
     return exists('t:AgPath') ? t:AgPath : expand("%:p:h")
 endfunction
 
+function! AgInteractive()
+    call inputsave()
+    let gp = input("The path to grep: ", AgPrePath(), "dir")
+    let pat = input("The string to grep: ")
+    call inputrestore()
+    if len(gp) > 0 && len(pat) > 0
+        exec 'LAg '.pat.' '.gp
+    endif
+endfunction
+
 function! s:Ag(cmd, args)
     redraw
     echo "Searching ..."

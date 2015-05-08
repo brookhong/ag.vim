@@ -21,7 +21,9 @@ function! NERDTreeFindNode()
                           \ "Enter the pattern to find:                                \n" .
                           \ "" . curDirNode.path.str() . ":")
     if pat != ""
-        call nerdtree#closeTreeIfOpen()
+        if g:NERDTree.IsOpen()
+            call g:NERDTree.Close()
+        endif
         exec "AgFile " .  pat . ' "' . curDirNode.path.str() . '"'
     else
         call s:echo("Find aborted.")
@@ -36,7 +38,9 @@ function! NERDTreeGrepNode()
                           \ "Enter the pattern to grep:                                \n" .
                           \ "" . curDirNode.path.str() . ":")
     if pat != ""
-        call nerdtree#closeTreeIfOpen()
+        if g:NERDTree.IsOpen()
+            call g:NERDTree.Close()
+        endif
         exec "LAg " .  pat . ' "' . curDirNode.path.str() . '"'
     else
         call s:echo("Grep aborted.")
