@@ -3,6 +3,7 @@ if exists("g:loaded_nerdtree_ag_menu")
 endif
 let g:loaded_nerdtree_ag_menu = 1
 
+call NERDTreeAddMenuItem({'text': '(s)hell this dir', 'shortcut': 's', 'callback': 'NERDTreeShellNode'})
 call NERDTreeAddMenuItem({'text': '(o)pen this dir', 'shortcut': 'o', 'callback': 'NERDTreeOpenNode'})
 call NERDTreeAddMenuItem({'text': '(f)ind file in this dir', 'shortcut': 'f', 'callback': 'NERDTreeFindNode', 'isActiveCallback': 'NERDTreeOnDir'})
 call NERDTreeAddMenuItem({'text': '(g)rep in this dir', 'shortcut': 'g', 'callback': 'NERDTreeGrepNode', 'isActiveCallback': 'NERDTreeOnDir'})
@@ -45,6 +46,13 @@ function! NERDTreeGrepNode()
     else
         call s:echo("Grep aborted.")
     endif
+endfunction
+
+" FUNCTION: NERDTreeShellNode() {{{1
+function! NERDTreeShellNode()
+    let curDirNode = g:NERDTreeDirNode.GetSelected()
+    exec "cd " . curDirNode.path.str()
+    exec "!" . $SHELL
 endfunction
 
 " FUNCTION: NERDTreeOpenNode() {{{1
