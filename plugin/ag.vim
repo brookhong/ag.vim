@@ -20,11 +20,13 @@ endfunction
 function! AgInteractive()
     call inputsave()
     let gp = input("The path to grep: ", AgPrePath(), "dir")
-    let pat = input("The string to grep: ")
-    call inputrestore()
-    if len(gp) > 0 && len(pat) > 0
-        exec 'LAg '.pat.' '.gp
+    if len(gp) > 0
+        let pat = input("The string to grep: ")
+        if len(pat) > 0
+            exec 'LAg '.pat.' '.gp
+        endif
     endif
+    call inputrestore()
 endfunction
 
 function! s:Ag(cmd, args)
