@@ -14,7 +14,15 @@ if !exists("g:agprg")
 endif
 
 function! AgPrePath()
-    return exists('t:AgPath') ? t:AgPath : expand("%:p:h")
+    if exists('t:AgPath')
+        let ap = t:AgPath
+    else
+        let ap = expand("%:p:h")
+    endif
+    if stridx(ap, ' ') != -1
+        let ap = '"' . ap . '"'
+    endif
+    return ap
 endfunction
 
 function! AgInteractive()
@@ -27,6 +35,31 @@ function! AgInteractive()
         endif
     endif
     call inputrestore()
+endfunction
+
+function! StrToList(mystr)
+    let i = 0
+    let token_start = ' '
+    let token = ""
+    let tokens = []
+    while i < len(a:mystr)
+        if len(token) == 0 && stridx("\"'", a:mystr[i]) != -1
+            let token_start = a:mystr[i]
+        elseif a:mystr[i] == token_start
+            if len(token)
+                call add(tokens, token)
+                let token = ""
+                let token_start = ' '
+            endif
+        else
+            let token = token . a:mystr[i]
+        endif
+        let i = i + 1
+    endwhile
+    if len(token)
+        call add(tokens, token)
+    endif
+    return tokens
 endfunction
 
 function! s:Ag(cmd, args)
@@ -52,7 +85,8 @@ function! s:Ag(cmd, args)
     try
         let &grepprg=g:agprg
         let &grepformat=g:agformat
-        let t:AgPath = split(l:grepargs, '\s\+')[-1]
+        let cmds = StrToList(l:grepargs)
+        let t:AgPath = cmds[-1]
         silent execute a:cmd . " " . l:grepargs
     finally
         let &grepprg=grepprg_bak
