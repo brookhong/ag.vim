@@ -26,8 +26,6 @@ function! NERDTreeFindNode()
             call g:NERDTree.Close()
         endif
         exec "AgFile " .  pat . ' "' . curDirNode.path.str() . '"'
-    else
-        call s:echo("Find aborted.")
     endif
 endfunction
 " FUNCTION: NERDTreeGrepNode() {{{1
@@ -43,8 +41,6 @@ function! NERDTreeGrepNode()
             call g:NERDTree.Close()
         endif
         exec "LAg " .  pat . ' "' . curDirNode.path.str() . '"'
-    else
-        call s:echo("Grep aborted.")
     endif
 endfunction
 
