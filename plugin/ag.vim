@@ -80,18 +80,24 @@ function! s:Ag(cmd, args)
         let g:agformat="%f:%l:%c:%m"
     end
 
-    let grepprg_bak=&grepprg
-    let grepformat_bak=&grepformat
-    try
-        let &grepprg=g:agprg
-        let &grepformat=g:agformat
+    if executable('ag')
+        let grepprg_bak=&grepprg
+        let grepformat_bak=&grepformat
+        try
+            let &grepprg=g:agprg
+            let &grepformat=g:agformat
+            let cmds = StrToList(l:grepargs)
+            let t:AgPath = cmds[-1]
+            silent execute a:cmd . " " . l:grepargs
+        finally
+            let &grepprg=grepprg_bak
+            let &grepformat=grepformat_bak
+        endtry
+    else
         let cmds = StrToList(l:grepargs)
         let t:AgPath = cmds[-1]
         silent execute a:cmd . " " . l:grepargs
-    finally
-        let &grepprg=grepprg_bak
-        let &grepformat=grepformat_bak
-    endtry
+    endif
 
     if a:cmd =~# '^l'
         botright lopen
