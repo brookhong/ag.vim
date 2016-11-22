@@ -13,12 +13,34 @@ if !exists("g:agprg")
     let g:agprg = "ag -f --nogroup --column --line-numbers"
 endif
 
+if !exists("g:ag_src_root_markers")
+    let g:ag_src_root_markers = ["/.git/", "/.cvs/", "/.svn/", "/.hg/", "/Makefile", "/Makefile.in", "/Makefile.am", "/package.json", "/bower.json", "/build.xml", "/pom.xml", "/build.gradle", "/Rakefile", "/CMakeLists.txt", "/configure", "/Makefile", "/Makefile"]
+endif
+
+function! GetSrcRoot()
+    let ap = expand("%:p:h")
+    let hit = 0
+    while ap != "/"
+
+        for srm in g:ag_src_root_markers
+            if (srm[-1:-1] == "/" && isdirectory(ap.srm)) || filereadable(ap.srm)
+                let hit = 1
+                break
+            endif
+        endfor
+
+        if hit == 0
+            let ap = substitute(ap, '/[^/]\+$', "","")
+        else
+            break
+        endif
+
+    endwhile
+    return ap
+endfunction
+
 function! AgPrePath()
-    if exists('t:AgPath')
-        let ap = t:AgPath
-    else
-        let ap = expand("%:p:h")
-    endif
+    let ap = GetSrcRoot()
     if stridx(ap, ' ') != -1
         let ap = '"' . ap . '"'
     endif
@@ -87,7 +109,6 @@ function! s:Ag(cmd, args)
             let &grepprg=g:agprg
             let &grepformat=g:agformat
             let cmds = StrToList(l:grepargs)
-            let t:AgPath = cmds[-1]
             silent execute a:cmd . " " . l:grepargs
         finally
             let &grepprg=grepprg_bak
@@ -95,7 +116,6 @@ function! s:Ag(cmd, args)
         endtry
     else
         let cmds = StrToList(l:grepargs)
-        let t:AgPath = cmds[-1]
         silent execute a:cmd . " " . l:grepargs
     endif
 
