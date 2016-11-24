@@ -20,7 +20,7 @@ endif
 function! GetSrcRoot()
     let ap = expand("%:p:h")
     let hit = 0
-    while ap != "/"
+    while ap != ""
 
         for srm in g:ag_src_root_markers
             if (srm[-1:-1] == "/" && isdirectory(ap.srm)) || filereadable(ap.srm)
@@ -36,6 +36,9 @@ function! GetSrcRoot()
         endif
 
     endwhile
+    if ap == ""
+        let ap = expand("%:p:h")
+    endif
     return ap
 endfunction
 
