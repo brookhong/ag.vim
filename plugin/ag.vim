@@ -19,6 +19,7 @@ endif
 
 function! GetSrcRoot()
     let ap = expand("%:p:h")
+    let ap = substitute(ap,"\\","\/","g")
     let hit = 0
     while ap != ""
 
