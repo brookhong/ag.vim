@@ -14,10 +14,10 @@ if !exists("g:agprg")
 endif
 
 if !exists("g:ag_src_root_markers")
-    let g:ag_src_root_markers = ["/.git/", "/.cvs/", "/.svn/", "/.hg/", "/Makefile", "/Makefile.in", "/Makefile.am", "/package.json", "/bower.json", "/build.xml", "/pom.xml", "/build.gradle", "/Rakefile", "/CMakeLists.txt", "/configure", "/Makefile", "/Makefile"]
+    let g:ag_src_root_markers = ["/.git/", "/.cvs/", "/.svn/", "/.hg/", "/Makefile", "/Makefile.in", "/Makefile.am", "/package.json", "/bower.json", "/build.xml", "/pom.xml", "/build.gradle", "/Rakefile", "/CMakeLists.txt", "/configure", "/build.sbt", "/Makefile"]
 endif
 
-function! GetSrcRoot()
+function! s:GetSrcRoot()
     let ap = expand("%:p:h")
     let ap = substitute(ap,"\\","\/","g")
     let hit = 0
@@ -44,7 +44,7 @@ function! GetSrcRoot()
 endfunction
 
 function! AgPrePath()
-    let ap = GetSrcRoot()
+    let ap = <SID>GetSrcRoot()
     if stridx(ap, ' ') != -1
         let ap = '"' . ap . '"'
     endif
@@ -111,6 +111,9 @@ function! s:Ag(cmd, args)
         let grepformat_bak=&grepformat
         try
             let &grepprg=g:agprg
+            if exists("g:agOnlyMatchWholeWords") && g:agOnlyMatchWholeWords
+                let &grepprg=g:agprg." -w"
+            endif
             let &grepformat=g:agformat
             let cmds = StrToList(l:grepargs)
             silent execute a:cmd . " " . l:grepargs
