@@ -57,7 +57,7 @@ function! AgInteractive()
     if len(gp) > 0
         let pat = input("The string to grep: ")
         if len(pat) > 0
-            exec 'LAg '.pat.' '.gp
+            exec 'LAg '.gp.' '.pat
         endif
     endif
     call inputrestore()
@@ -116,14 +116,14 @@ function! s:Ag(cmd, args)
             endif
             let &grepformat=g:agformat
             let cmds = StrToList(l:grepargs)
-            silent execute a:cmd . " " . l:grepargs
+            silent execute a:cmd . " " . cmds[-1] . " " . cmds[0]
         finally
             let &grepprg=grepprg_bak
             let &grepformat=grepformat_bak
         endtry
     else
         let cmds = StrToList(l:grepargs)
-        silent execute a:cmd . " " . l:grepargs
+        silent execute a:cmd . " " . cmds[-1] . " " . cmds[0]
     endif
 
     if a:cmd =~# '^l'
@@ -146,6 +146,7 @@ function! s:Ag(cmd, args)
         set hlsearch
     end
 
+    echo ""
     redraw!
 endfunction
 
@@ -161,4 +162,4 @@ command! -bang -nargs=* -complete=file AgAdd call s:Ag('grepadd<bang>', <q-args>
 command! -bang -nargs=* -complete=file AgFromSearch call s:AgFromSearch('grep<bang>', <q-args>)
 command! -bang -nargs=* -complete=file LAg call s:Ag('lgrep<bang>', <q-args>)
 command! -bang -nargs=* -complete=file LAgAdd call s:Ag('lgrepadd<bang>', <q-args>)
-command! -bang -nargs=* -complete=file AgFile call s:Ag('grep<bang> -g', <q-args>)
+command! -bang -nargs=* -complete=file AgFile call s:Ag('lgrep<bang> -g', <q-args>)
